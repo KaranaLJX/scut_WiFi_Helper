@@ -1,21 +1,31 @@
 ﻿import requests
 import win32api
 import win32con
+import re
 
 wlanuserip_ = ""
 wlanacip_ = "172.21.255.250"
 user_id = ""
 password = ""
 
+
 def init_config():
+    ip_pattern = r"^(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)$"
+    user_id_pattern = r"^20\d{10}$"
     try:
         reg = win32api.RegCreateKeyEx(win32con.HKEY_CURRENT_USER,"SOFTWARE\\LogDormWiFi",win32con.WRITE_OWNER |win32con.KEY_WOW64_64KEY|win32con.KEY_WRITE)
         print("请输入申请校园网时的IP地址(xx.xx.xx.xx):",end='')
         wlanuserip = str(input())
+        while(not(re.match(ip_pattern,wlanuserip))):
+            print("请输入申请校园网时[被分配到]的IP地址(xx.xx.xx.xx)[0-255]:",end='')
+            wlanuserip = str(input())
         reg = win32api.RegOpenKey(win32con.HKEY_CURRENT_USER,"SOFTWARE\\LogDormWiFi",0,win32con.KEY_WRITE)
         win32api.RegSetValueEx(reg,"wlanuserip",0, win32con.REG_SZ,wlanuserip)
-        print("请输入你的学号(xxxxxxxxxxxx):",end='')
+        print("请输入你的学号(20xxxxxxxxxx):",end='')
         userid = str(input())
+        while(not(re.match(user_id_pattern,userid))):
+            print("请输入你的[12位]学号(20xxxxxxxxxx):",end='')
+            userid = str(input())
         win32api.RegSetValueEx(reg,"user_id",0, win32con.REG_SZ,userid)
         print("请输入你的密码(默认为身份证后8位):",end='')
         password_ = str(input())
