@@ -1,8 +1,8 @@
-# scut_WiFi_Helper
+﻿# scut_WiFi_Helper
 
-SCUT WiFi Helper(0.1.1)
+SCUT WiFi Helper(0.1.2)
 
-Last Update: 2019/1/3
+Last Update: 2019/2/1
 
 华南理工大学-宿舍WiFi连接助手
 
