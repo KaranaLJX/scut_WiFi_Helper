@@ -8,6 +8,11 @@ wlanacip_ = "172.21.255.250"
 user_id = ""
 password = ""
 
+def print_error(text = "Unhandled Exception"):
+    print("*"*25)
+    print(text)
+    print("*"*25)
+    return
 
 def init_config():
     ip_pattern = r"^(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)$"
@@ -62,11 +67,21 @@ wlanacname_ = "WX6108E-slot7-AC"
 vlan_id_ = "scut-student"
 url = "https://s.scut.edu.cn:801/eportal/?c=ACSetting&a=Login&wlanuserip=" + wlanuserip_[0] + "&wlanacip=" + wlanacip_ + "&wlanacname=" + wlanacname_ + "&redirect=&session=&vlanid=" + vlan_id_ + "&port=&iTermType=1&protocol=https:"
 data = {'DDDDD':user_id[0],'upass':password[0],'R1':'0','R2':'','R6':'0','para':'00','0MKKey':'123456'}
-r = requests.post(url,data).text
-if("成功" in r):
-    print("-"*25 + "\n登录成功!\n" + "-"*25)
-elif ("已使用" in r):
-    print("-"*35 + "\n已经成功连接WiFi!无需再次登录!\n" + "-"*35)
-else:
-    print("-"*25 + "\n登录失败!\n" + "-"*25)
-    print(r)
+try:
+    r = requests.post(url,data,timeout = 5).text
+    if("成功" in r):
+        print("-"*25 + "\n登录成功!\n" + "-"*25)
+    elif ("已使用" in r):
+        print("-"*35 + "\n已经成功连接WiFi!无需再次登录!\n" + "-"*35)
+    else:
+        print("-"*25 + "\n登录失败!\n" + "-"*25)
+        print(r)
+except requests.exceptions.HTTPError as e:
+    print_error("建立连接失败!")
+    exit(-1)
+except requests.exceptions.ConnectTimeout as e:
+    print_error("连接验证服务器超时!")
+    exit(-1)
+except requests.exceptions.RequestException as e:
+    print_error(str(e))
+    exit(-1)
