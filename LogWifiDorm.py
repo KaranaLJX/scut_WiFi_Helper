@@ -18,10 +18,13 @@ def getIP():
     ip_pattern = r"^(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)$"
     try:
         tmp = str(requests.get(getURL).text)
-        begin = tmp.find(r"ss5="")
+        begin = tmp.find('''ss5="''')
         ss5 = tmp[begin + 5:tmp.find('''"''',begin + 5)]
         if(not(re.match(ip_pattern,ss5))):
-            print_error("获取IP地址失败!检查是否连接scut-student")
+            if("CTYPE html PUBLIC" in ss5):
+                print_error("您已经登录")
+            else:
+                print_error("获取IP地址失败!检查是否连接scut-student")
         else:
             wlanuserip_ = ss5
             print("IP address is:%s"%wlanuserip_)
